@@ -83,7 +83,7 @@ fi
 # 下载Aria2源文件
 echo -e "\033[32m 下载远程配置Aria2源码 \033[0m"
 echo -e "\033[32m 正在下载( ´▽｀) \033[0m"
-wget -qO ${shellPath}/Aria2.zip "http://150.158.155.98:8080/fileHost/download/96"
+wget -qO ${shellPath}/Aria2.zip "https://github.com/Mintimate/AutoInstallAria2/blob/main/aria2-1.35.0-linux-gnu-64bit-build1.zip"
 
 
 echo -e "\033[32m 解压Aria2文件 \033[0m"
@@ -106,7 +106,7 @@ mkdir .aria2  #配置文件存放目录
 
 # 配置自动删除日志脚本
 echo -e "\033[32m 配置自动删除日志脚本 \033[0m"
-wget -O .aria2/deleteAria2.sh https://gitee.com/mintimate/auto-install-aria2/raw/master/deleteAria2.sh
+wget -O .aria2/deleteAria2.sh https://github.com/Mintimate/AutoInstallAria2/blob/main/deleteAria2.sh
 
 echo -e "\033[32m 最后部署 \033[0m"
 
