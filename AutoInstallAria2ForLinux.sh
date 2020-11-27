@@ -71,19 +71,20 @@ fi
 
 # 安装依赖
 echo -e "\033[32m 安装依赖啦 \033[0m"
+echo -e "\033[32m 非管理员可能需要输入密码嗷 \033[0m"
 if [ method == "apt-get" ]
 then
     echo -e "\033[32m 安装依赖：build-essential \033[0m"
-    apt-get update && apt-get install build-essential -y  >> /dev/null 2>&1
+    sudo apt-get update && sudo apt-get install build-essential -y  >> /dev/null 2>&1
 else
-    ${method} update && ${method} groupinstall "Development Tools" >> /dev/null 2>&1
+    sudo ${method} update && sudo ${method} groupinstall "Development Tools" >> /dev/null 2>&1
 fi
 
 
 # 下载Aria2源文件
 echo -e "\033[32m 下载远程配置Aria2源码 \033[0m"
 echo -e "\033[32m 正在下载( ´▽｀) \033[0m"
-wget -qO ${shellPath}/Aria2.zip "https://github.com/Mintimate/AutoInstallAria2/blob/main/aria2-1.35.0-linux-gnu-64bit-build1.zip"
+wget -qO ${shellPath}/Aria2.zip "https://github.com/Mintimate/AutoInstallAria2/raw/main/aria2-1.35.0-linux-gnu-64bit-build1.zip"
 
 
 echo -e "\033[32m 解压Aria2文件 \033[0m"
@@ -106,10 +107,16 @@ mkdir .aria2  #配置文件存放目录
 
 # 配置自动删除日志脚本
 echo -e "\033[32m 配置自动删除日志脚本 \033[0m"
-wget -O .aria2/deleteAria2.sh https://github.com/Mintimate/AutoInstallAria2/blob/main/deleteAria2.sh
+wget -O .aria2/deleteAria2.sh https://github.com/Mintimate/AutoInstallAria2/raw/main/deleteAria2.sh
+echo -e "\033[32m 给自动删除日志脚本提权 \033[0m"
+chmod 777 .aria2/deleteAria2.sh
 
-echo -e "\033[32m 最后部署 \033[0m"
+cd ../
+shellPath=`pwd`
 
+
+echo -e "\033[32m 正在进行最后部署 \033[0m"
+echo -e "\033[32m ------------- \033[0m"
 
 echo "
 #用户名
@@ -150,7 +157,7 @@ max-upload-limit=0
 #验证用，需要1.16.1之后的release版本
 #referer=*
 #文件保存路径, 默认为当前启动位置
-dir=${shellPath}/Download
+dir=${shellPath}/Aria2Downloads
 #文件缓存, 使用内置的文件缓存, 如果你不相信Linux内核文件缓存和磁盘内置缓存时使用, 需要1.16及以上版本
 #disk-cache=0
 #另一种Linux文件缓存方式, 使用前确保您使用的内核支持此选项, 需要1.15及以上版本(?)
@@ -192,13 +199,15 @@ bt-save-metadata=true
 #最小做种时间
 seed-time=0
 # 下载好后自动执行脚本
-on-download-complete=${shellPath}/.aria2/deleteAria2.sh
-" > .aria2/aria2.conf
+on-download-complete=${shellPath}/Aria2/.aria2/deleteAria2.sh
+" > Aria2/.aria2/aria2.conf
 
 echo "
-aria2c --conf-path="${shellPath}/.aria2/aria2.conf"
-" > ../aria2.sh
+aria2c --conf-path="${shellPath}/Aria2/.aria2/aria2.conf"
+" > aria2.sh
 
+echo -e "\033[32m 最后部署完成 \033[0m"
+echo -e "\033[32m —----------- \033[0m"
 
 echo -e "\033[31m Aria2配置文件所在地址： \033[0m"
 echo -e "\033[32m ${shellPath}/.aria2/aria2.conf \033[0m"
