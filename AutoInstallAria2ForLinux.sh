@@ -36,7 +36,7 @@ centos|fedora|rhel)
     if test "$(echo "$VERSION_ID >= 22" | bc)" -ne 0; then
         yumdnf="dnf"
     fi
-    method=yumdnf
+    method=${yumdnf}
     ;;
 *)
 echo -e "\033[31m 未知Linux版本，请手动选择： \033[0m"
