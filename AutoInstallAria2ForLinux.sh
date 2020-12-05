@@ -2,7 +2,86 @@
 # Linux工具包，默认apt-get
 method="None"
 # 环境地址
-shellPath=`pwd`
+shellPath=$(pwd)
+
+function printMintimate() {
+    echo -e "\033[32m
+_____________________________________________________________
+    _   _
+    /  /|     ,                 ,
+---/| /-|----------__---_/_---------_--_-----__---_/_-----__-
+  / |/  |   /    /   )  /     /    / /  )  /   )  /     /___)
+_/__/___|__/____/___/__(_ ___/____/_/__/__(___(__(_ ___(___ _
+         Mintimate's Blog:https://www.mintimate.cn
+_____________________________________________________________
+ \033[0m"
+}
+
+function judgeVersion() {
+    # 创建局部变量，判断使用工具包
+    local version="None"
+    # 判断Linux系统版本
+    source /etc/os-release
+    case $ID in
+    debian | ubuntu | devuan )
+        version="apt-get"
+        ;;
+    centos | fedora | rhel)
+        local yumdnf="yum"
+        if test "$(echo "$VERSION_ID >= 22" | bc)" -ne 0; then
+            local yumdnf="dnf"
+        fi
+        version=${yumdnf}
+        ;;
+    *)
+        echo -e "\033[31m 未知Linux版本，请手动选择： \033[0m"
+        echo "1:使用apt-get工具包的Linux"
+        echo "2:使用yum工具包的Linux"
+        echo "3:使用dnf工具包的Linux"
+        echo "0或其他按键：其他工具包"
+        read temp
+        if [ ${temp} -eq "1" ]; then
+            version="apt-get"
+        elif [ ${temp} -eq "2" ]; then
+            return="yum"
+        elif [ ${temp} -eq "3" ]; then
+            version="dnf"
+        else
+            version="None"
+        fi
+        ;;
+    esac
+
+    # 判断是否支持该脚本
+    if [ ${version} == "None" ]; then
+        echo -e "\033[31m 你的系统不支持该脚本 \033[0m"
+        echo -e "\033[31m 请联系我： \033[0m"
+        echo -e "\033[31m QQ：198330181 \033[0m"
+        exit
+    fi
+    method=${version}
+}
+
+function judgeEnvironment(){
+# 判断是否安装了unzip
+if ! type unzip >/dev/null 2>&1; then
+    echo -e "\033[31m 依赖：unzip 未安装 \033[0m"
+    echo -e "\033[32m 正在安装unzip \033[0m"
+    sudo ${method} install unzip >>/dev/null 2>&1
+else
+    echo -e "\033[32m 依赖：unzip 已经安装 \033[0m"
+fi
+# 判断是否安装了make
+if ! type make >/dev/null 2>&1; then
+    echo -e "\033[31m 依赖：make 未安装 \033[0m"
+    echo -e "\033[32m 正在安装unzip \033[0m"
+    sudo ${method} install make >>/dev/null 2>&1
+else
+    echo -e "\033[32m 依赖：make 已经安装 \033[0m"
+fi
+}
+
+printMintimate
 
 echo -e "\033[32m
     Aria2简单编译配置脚本
@@ -25,68 +104,26 @@ echo "设置Aria2密码"
 echo -e "\033[31m (用于远程Aria2认证) \033[0m"
 read Aria2token
 
-# 判断Linux系统版本
-source /etc/os-release
-case $ID in
-debian|ubuntu|devuan)
-    method="apt-get"
-    ;;
-centos|fedora|rhel)
-    yumdnf="yum"
-    if test "$(echo "$VERSION_ID >= 22" | bc)" -ne 0; then
-        yumdnf="dnf"
-    fi
-    method=${yumdnf}
-    ;;
-*)
-echo -e "\033[31m 未知Linux版本，请手动选择： \033[0m"
-echo "1:使用apt-get工具包的Linux"
-echo "2:使用yum工具包的Linux"
-echo "3:使用dnf工具包的Linux"
-echo "0或其他按键：其他工具包"
-read temp
-if [ ${temp} -eq "1" ]
-then
-    method="apt-get"
-elif [ ${temp} -eq "2" ]
-then
-    method="yum"
-elif [ ${temp} -eq "3" ]
-then
-    method="dnf"
-else
-    method="None"
-fi
-    ;;
-esac
-
-# 判断是否支持该脚本
-if [ ${method} == "None" ]
-then
-    echo -e "\033[31m 你的系统不支持该脚本 \033[0m"
-    echo -e "\033[31m 请联系我： \033[0m"
-    echo -e "\033[31m QQ：198330181 \033[0m"
-    exit
-fi
+judgeVersion
 
 # 安装依赖
 echo -e "\033[32m 安装依赖啦 \033[0m"
 echo -e "\033[32m 非管理员可能需要输入密码嗷 \033[0m"
-if [ method == "apt-get" ]
-then
+if [ method == "apt-get" ]; then
     echo -e "\033[32m 安装依赖：build-essential \033[0m"
-    sudo apt-get update && sudo apt-get install build-essential -y  >> /dev/null 2>&1
+    sudo apt-get update  >>/dev/null 2>&1
+    sudo apt-get install build-essential -y >>/dev/null 2>&1
 else
-    sudo ${method} update && sudo ${method} groupinstall "Development Tools" >> /dev/null 2>&1
+    sudo ${method} update  >>/dev/null 2>&1
+    sudo ${method} groupinstall "Development Tools" >>/dev/null 2>&1
 fi
-
 
 # 下载Aria2源文件
 echo -e "\033[32m 下载远程配置Aria2源码 \033[0m"
 echo -e "\033[32m 正在下载( ´▽｀) \033[0m"
 wget -qO ${shellPath}/Aria2.zip "https://github.com/Mintimate/AutoInstallAria2/raw/main/aria2-1.35.0-linux-gnu-64bit-build1.zip"
 
-
+judgeEnvironment
 echo -e "\033[32m 解压Aria2文件 \033[0m"
 unzip ${shellPath}/Aria2.zip
 
@@ -94,26 +131,24 @@ unzip ${shellPath}/Aria2.zip
 mv aria2-1.35.0-linux-gnu-64bit-build1 Aria2
 # 切换脚本目录到Aria2文件内
 cd ${shellPath}/Aria2
-shellPath=`pwd`
+shellPath=$(pwd)
 
 echo -e "\033[32m 编译Aria2到系统 \033[0m"
-make install >> /dev/null 2>&1
-echo -e "\033[32m 提权 \033[0m"
+make install >>/dev/null 2>&1
+echo -e "\033[32m 提权Aria2 \033[0m"
 chmod +x aria2c
 
-
 mkdir ../Aria2Downloads #下载文件存储目录
-mkdir .aria2  #配置文件存放目录
+mkdir .aria2            #配置文件存放目录
 
 # 配置自动删除日志脚本
 echo -e "\033[32m 配置自动删除日志脚本 \033[0m"
-wget -O .aria2/deleteAria2.sh https://github.com/Mintimate/AutoInstallAria2/raw/main/deleteAria2.sh
+wget -O .aria2/deleteAria2.sh https://raw.githubusercontent.com/Mintimate/AutoInstallAria2/main/deleteAria2.sh
 echo -e "\033[32m 给自动删除日志脚本提权 \033[0m"
 chmod 777 .aria2/deleteAria2.sh
 
 cd ../
-shellPath=`pwd`
-
+shellPath=$(pwd)
 
 echo -e "\033[32m 正在进行最后部署 \033[0m"
 echo -e "\033[32m ------------- \033[0m"
@@ -200,17 +235,22 @@ bt-save-metadata=true
 seed-time=0
 # 下载好后自动执行脚本
 on-download-complete=${shellPath}/Aria2/.aria2/deleteAria2.sh
-" > Aria2/.aria2/aria2.conf
+" >Aria2/.aria2/aria2.conf
 
 echo "
 aria2c --conf-path="${shellPath}/Aria2/.aria2/aria2.conf"
-" > aria2.sh
+" >aria2.sh
 
-echo -e "\033[32m 最后部署完成 \033[0m"
-echo -e "\033[32m —----------- \033[0m"
+echo -e "\033[32m 放权文件权限 \033[0m"
+echo -e "\033[32m ------------- \033[0m"
+sudo chmod 777 ${shellPath}/Aria2 -R
+sudo chmod 777 ${shellPath}/Aria2Downloads -R
+sudo chmod 777 ${shellPath}/aria2.sh
+sudo rm -rf Aria2.zip
+sudo rm -rf AutoInsatllAria2ForLinux.sh
 
 echo -e "\033[31m Aria2配置文件所在地址： \033[0m"
-echo -e "\033[32m ${shellPath}/.aria2/aria2.conf \033[0m"
+echo -e "\033[32m ${shellPath}/Aria2/.aria2/aria2.conf \033[0m"
 echo "————————————————————————————————————————"
 echo -e "\033[32m
     脚本执行完成，请在当前目通过下列命令：
@@ -224,3 +264,7 @@ echo -e "\033[32m
     Mintimate's Bilibili:
     https://space.bilibili.com/355567627
  \033[0m"
+ 
+echo "删除本脚本带来的残留文件"
+echo "删除成功，愉快使用Aria2吧( ´▽｀)"
+unlink $0
