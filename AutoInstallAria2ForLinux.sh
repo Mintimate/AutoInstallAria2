@@ -199,7 +199,7 @@ on-download-complete=/etc/aria2/deleteAria2.sh
 
 aria2Shell=${HOME}/aria2.sh
 echo "
-aria2c --conf-path="/etc/aria2/aria2.conf"
+/etc/aria2/aria2c --conf-path="/etc/aria2/aria2.conf"
 " >${aria2Shell}
 
 cd ../
@@ -230,7 +230,7 @@ echo -e "\033[32m
     bash aria2.sh
     启动Aria2后台程序
     
-    也可以配置环境变量：
+    如果想任意目录使用Aria2，配置环境变量：
     export PATH=\$PATH:/etc/aria2
     
     更多教程：
