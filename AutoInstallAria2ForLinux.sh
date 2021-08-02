@@ -57,39 +57,54 @@ function judgeVersion() {
         echo -e "\033[31m 你的系统不支持该脚本 \033[0m"
         echo -e "\033[31m 请联系我： \033[0m"
         echo -e "\033[31m QQ：198330181 \033[0m"
+        echo -e "\033[31m （限：求助前，有给我视频三连的粉丝用户） \033[0m"
         exit
     fi
     method=${version}
 }
-
-function judgeEnvironment(){
-# 判断是否安装了unzip
-if ! type unzip >/dev/null 2>&1; then
-    echo -e "\033[31m 依赖：unzip 未安装 \033[0m"
-    echo -e "\033[32m 正在安装unzip \033[0m"
-    sudo ${method} install unzip >>/dev/null 2>&1
-else
-    echo -e "\033[32m 依赖：unzip 已经安装 \033[0m"
-fi
-# 判断是否安装了make
-if ! type make >/dev/null 2>&1; then
-    echo -e "\033[31m 依赖：make 未安装 \033[0m"
-    echo -e "\033[32m 正在安装unzip \033[0m"
-    sudo ${method} install make >>/dev/null 2>&1
-else
-    echo -e "\033[32m 依赖：make 已经安装 \033[0m"
-fi
+function judgeArchitecture(){
+    echo -e "\033[31m 判断系统架构 \033[0m"
+    echo -e "\033[32m 正在下载( ´▽｀) \033[0m"
+    OS="$(uname -m)"
+    case $OS in
+    aarch64 | arm64 | arm )
+        wget -qO ${shellPath}/Aria2.tar.bz2 "https://github.com/Mintimate/AutoInstallAria2/raw/main/aria2-1.35.0-linux-gnu-arm-rbpi-build1.tar.bz2"
+        ;;
+    x86_64 | x64 )
+        wget -qO ${shellPath}/Aria2.tar.bz2 "https://github.com/Mintimate/AutoInstallAria2/raw/main/aria2-1.35.0-linux-gnu-64bit-build1.tar.bz2"
+        ;;
+    *)
+        echo -e "\033[31m 未知Linux架构，请手动选择： \033[0m"
+        echo "1:x86 32位的Linux"
+        echo "2:x86 64位的Linux"
+        echo "3:ARM 架构的Linux"
+        echo "0或其他按键：其他工具包"
+        read temp
+        if [ ${temp} -eq "1" ]; then
+            wget -qO ${shellPath}/Aria2.tar.bz2 "https://github.com/Mintimate/AutoInstallAria2/raw/main/aria2-1.35.0-linux-gnu-32bit-build1.tar.bz2"
+        elif [ ${temp} -eq "2" ]; then
+            wget -qO ${shellPath}/Aria2.tar.bz2 "https://github.com/Mintimate/AutoInstallAria2/raw/main/aria2-1.35.0-linux-gnu-64bit-build1.tar.bz2"
+        elif [ ${temp} -eq "3" ]; then
+            wget -qO ${shellPath}/Aria2.tar.bz2 "https://github.com/Mintimate/AutoInstallAria2/raw/main/aria2-1.35.0-linux-gnu-arm-rbpi-build1.tar.bz2"
+        else
+            echo -e "\033[31m 本脚本不支持其他架构 \033[0m"
+            exit
+        fi
+        ;;
+    esac
+    
 }
 
 printMintimate
 
 echo -e "\033[32m
-    Aria2简单编译配置脚本
+    Aria2快速配置脚本
     作者：Mintimate
    
     使用本脚本可以一键在Linux上配置Aria2
     获取帮助：
     QQ：198330181
+    （限：求助前，有给我视频三连的粉丝用户）
     
     更多教程：
     Mintimate's Blog:
@@ -106,49 +121,35 @@ read Aria2token
 
 judgeVersion
 
-# 安装依赖
-echo -e "\033[32m 安装依赖啦 \033[0m"
-echo -e "\033[32m 非管理员可能需要输入密码嗷 \033[0m"
-if [ method == "apt-get" ]; then
-    echo -e "\033[32m 安装依赖：build-essential \033[0m"
-    sudo apt-get update  >>/dev/null 2>&1
-    sudo apt-get install build-essential -y >>/dev/null 2>&1
-else
-    sudo ${method} update  >>/dev/null 2>&1
-    sudo ${method} groupinstall "Development Tools" >>/dev/null 2>&1
-fi
-
 # 下载Aria2源文件
 echo -e "\033[32m 下载远程配置Aria2源码 \033[0m"
-echo -e "\033[32m 正在下载( ´▽｀) \033[0m"
-wget -qO ${shellPath}/Aria2.zip "https://github.com/Mintimate/AutoInstallAria2/raw/main/aria2-1.35.0-linux-gnu-64bit-build1.zip"
+judgeArchitecture
 
-judgeEnvironment
+echo -e "\033[32m 创建解压临时文件 \033[0m"
+mkdir Aria2Temp
 echo -e "\033[32m 解压Aria2文件 \033[0m"
-unzip ${shellPath}/Aria2.zip
+tar -xf ${shellPath}/Aria2.tar.bz2 -C ${shellPath}/Aria2Temp
 
-# 重命名文件
-mv aria2-1.35.0-linux-gnu-64bit-build1 Aria2
 # 切换脚本目录到Aria2文件内
-cd ${shellPath}/Aria2
+cd ${shellPath}/Aria2Temp/*
 shellPath=$(pwd)
 
-echo -e "\033[32m 编译Aria2到系统 \033[0m"
-make install >>/dev/null 2>&1
 echo -e "\033[32m 提权Aria2 \033[0m"
 chmod +x aria2c
 
-mkdir ../Aria2Downloads #下载文件存储目录
-mkdir .aria2            #配置文件存放目录
+
+
+dirAria2=${HOME}/Downloads #下载文件存储目录
+if [ -d ${dirAria2} ];then
+  else
+  mkdir ${HOME}/Downloads
+fi
 
 # 配置自动删除日志脚本
 echo -e "\033[32m 配置自动删除日志脚本 \033[0m"
-wget -O .aria2/deleteAria2.sh https://raw.githubusercontent.com/Mintimate/AutoInstallAria2/main/deleteAria2.sh
+wget -O deleteAria2.sh https://raw.githubusercontent.com/Mintimate/AutoInstallAria2/main/deleteAria2.sh
 echo -e "\033[32m 给自动删除日志脚本提权 \033[0m"
-chmod 777 .aria2/deleteAria2.sh
-
-cd ../
-shellPath=$(pwd)
+chmod 777 deleteAria2.sh
 
 echo -e "\033[32m 正在进行最后部署 \033[0m"
 echo -e "\033[32m ------------- \033[0m"
@@ -192,7 +193,7 @@ max-upload-limit=0
 #验证用，需要1.16.1之后的release版本
 #referer=*
 #文件保存路径, 默认为当前启动位置
-dir=${shellPath}/Aria2Downloads
+dir=${HOME}/Downloads
 #文件缓存, 使用内置的文件缓存, 如果你不相信Linux内核文件缓存和磁盘内置缓存时使用, 需要1.16及以上版本
 #disk-cache=0
 #另一种Linux文件缓存方式, 使用前确保您使用的内核支持此选项, 需要1.15及以上版本(?)
@@ -234,28 +235,40 @@ bt-save-metadata=true
 #最小做种时间
 seed-time=0
 # 下载好后自动执行脚本
-on-download-complete=${shellPath}/Aria2/.aria2/deleteAria2.sh
-" >Aria2/.aria2/aria2.conf
+on-download-complete=/etc/aria2/deleteAria2.sh
+" >aria2.conf
 
 echo "
-aria2c --conf-path="${shellPath}/Aria2/.aria2/aria2.conf"
-" >aria2.sh
+aria2c --conf-path="/etc/aria2.conf"
+" >${HOME}/aria2.sh
+
+cd ../
+sudo mv * /etc/aria2
+cd ../
 
 echo -e "\033[32m 放权文件权限 \033[0m"
 echo -e "\033[32m ------------- \033[0m"
-sudo chmod 777 ${shellPath}/Aria2 -R
-sudo chmod 777 ${shellPath}/Aria2Downloads -R
-sudo chmod 777 ${shellPath}/aria2.sh
-sudo rm -rf Aria2.zip
+sudo chmod 777 ${HOME}/aria2.sh
+sudo rm -rf Aria2.tar.bz2
 sudo rm -rf AutoInsatllAria2ForLinux.sh
+sudo rm -rf Aria2Temp
 
+echo -e "\033[31m Aria2安装地址： \033[0m"
+echo -e "\033[32m /etc/aria2 \033[0m"
+echo "————————————————————————————————————————"
 echo -e "\033[31m Aria2配置文件所在地址： \033[0m"
-echo -e "\033[32m ${shellPath}/Aria2/.aria2/aria2.conf \033[0m"
+echo -e "\033[32m /etc/aria2/aria2.conf \033[0m"
+echo "————————————————————————————————————————"
+echo -e "\033[31m Aria2默认下载地址： \033[0m"
+echo -e "\033[32m ${HOME}/Downloads \033[0m"
 echo "————————————————————————————————————————"
 echo -e "\033[32m
-    脚本执行完成，请在当前目通过下列命令：
+    脚本执行完成，请在当前目录通过下列命令：
     bash aria2.sh
     启动Aria2后台程序
+    
+    也可以配置环境变量：
+    export PATH=\$PATH:/etc/aria2
     
     更多教程：
     Mintimate's Blog:
