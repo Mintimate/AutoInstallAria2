@@ -68,10 +68,10 @@ function judgeArchitecture(){
     OS="$(uname -m)"
     case $OS in
     aarch64 | arm64 | arm )
-        wget -qO ${shellPath}/Aria2.tar.bz2 "https://github.com/Mintimate/AutoInstallAria2/raw/main/aria2-1.35.0-linux-gnu-arm-rbpi-build1.tar.bz2"
+        wget -qO ${shellPath}/Aria2.tar.bz2 "https://cdn.jsdelivr.net/gh/Mintimate/AutoInstallAria2@2.0/aria2-1.35.0-linux-gnu-arm-rbpi-build1.tar.bz2"
         ;;
     x86_64 | x64 )
-        wget -qO ${shellPath}/Aria2.tar.bz2 "https://github.com/Mintimate/AutoInstallAria2/raw/main/aria2-1.35.0-linux-gnu-64bit-build1.tar.bz2"
+        wget -qO ${shellPath}/Aria2.tar.bz2 "https://cdn.jsdelivr.net/gh/Mintimate/AutoInstallAria2@2.0/aria2-1.35.0-linux-gnu-64bit-build1.tar.bz2"
         ;;
     *)
         echo -e "\033[31m 未知Linux架构，请手动选择： \033[0m"
@@ -81,11 +81,11 @@ function judgeArchitecture(){
         echo "0或其他按键：其他工具包"
         read temp
         if [ ${temp} -eq "1" ]; then
-            wget -qO ${shellPath}/Aria2.tar.bz2 "https://github.com/Mintimate/AutoInstallAria2/raw/main/aria2-1.35.0-linux-gnu-32bit-build1.tar.bz2"
+            wget -qO ${shellPath}/Aria2.tar.bz2 "https://cdn.jsdelivr.net/gh/Mintimate/AutoInstallAria2@2.0/aria2-1.35.0-linux-gnu-32bit-build1.tar.bz2"
         elif [ ${temp} -eq "2" ]; then
-            wget -qO ${shellPath}/Aria2.tar.bz2 "https://github.com/Mintimate/AutoInstallAria2/raw/main/aria2-1.35.0-linux-gnu-64bit-build1.tar.bz2"
+            wget -qO ${shellPath}/Aria2.tar.bz2 "https://cdn.jsdelivr.net/gh/Mintimate/AutoInstallAria2@2.0/aria2-1.35.0-linux-gnu-64bit-build1.tar.bz2"
         elif [ ${temp} -eq "3" ]; then
-            wget -qO ${shellPath}/Aria2.tar.bz2 "https://github.com/Mintimate/AutoInstallAria2/raw/main/aria2-1.35.0-linux-gnu-arm-rbpi-build1.tar.bz2"
+            wget -qO ${shellPath}/Aria2.tar.bz2 "https://cdn.jsdelivr.net/gh/Mintimate/AutoInstallAria2@2.0/aria2-1.35.0-linux-gnu-arm-rbpi-build1.tar.bz2"
         else
             echo -e "\033[31m 本脚本不支持其他架构 \033[0m"
             exit
