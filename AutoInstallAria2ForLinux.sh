@@ -1,6 +1,9 @@
 #!/bin/bash
-# Linux工具包，默认apt-get
-method="None"
+# Description:
+
+# Author: @Mintimate
+# Blog: https://www.mintimate.cn/about
+
 # 环境地址
 shellPath=$(pwd)
 
@@ -17,51 +20,6 @@ _____________________________________________________________
  \033[0m"
 }
 
-function judgeVersion() {
-    # 创建局部变量，判断使用工具包
-    local version="None"
-    # 判断Linux系统版本
-    source /etc/os-release
-    case $ID in
-    debian | ubuntu | devuan )
-        version="apt-get"
-        ;;
-    centos | fedora | rhel)
-        local yumdnf="yum"
-        if test "$(echo "$VERSION_ID >= 22" | bc)" -ne 0; then
-            local yumdnf="dnf"
-        fi
-        version=${yumdnf}
-        ;;
-    *)
-        echo -e "\033[31m 未知Linux版本，请手动选择： \033[0m"
-        echo "1:使用apt-get工具包的Linux"
-        echo "2:使用yum工具包的Linux"
-        echo "3:使用dnf工具包的Linux"
-        echo "0或其他按键：其他工具包"
-        read temp
-        if [ ${temp} -eq "1" ]; then
-            version="apt-get"
-        elif [ ${temp} -eq "2" ]; then
-            return="yum"
-        elif [ ${temp} -eq "3" ]; then
-            version="dnf"
-        else
-            version="None"
-        fi
-        ;;
-    esac
-
-    # 判断是否支持该脚本
-    if [ ${version} == "None" ]; then
-        echo -e "\033[31m 你的系统不支持该脚本 \033[0m"
-        echo -e "\033[31m 请联系我： \033[0m"
-        echo -e "\033[31m QQ：198330181 \033[0m"
-        echo -e "\033[31m （限：求助前，有给我视频三连的粉丝用户） \033[0m"
-        exit
-    fi
-    method=${version}
-}
 function judgeArchitecture(){
     echo -e "\033[31m 判断系统架构 \033[0m"
     echo -e "\033[32m 正在下载( ´▽｀) \033[0m"
@@ -119,7 +77,6 @@ echo "设置Aria2密码"
 echo -e "\033[31m (用于远程Aria2认证) \033[0m"
 read Aria2token
 
-judgeVersion
 
 # 下载Aria2源文件
 echo -e "\033[32m 下载远程配置Aria2源码 \033[0m"
@@ -240,9 +197,10 @@ seed-time=0
 on-download-complete=/etc/aria2/deleteAria2.sh
 " >aria2.conf
 
+aria2Shell=${HOME}/aria2.sh
 echo "
-aria2c --conf-path="/etc/aria2.conf"
-" >${HOME}/aria2.sh
+aria2c --conf-path="/etc/aria2/aria2.conf"
+" >${aria2Shell}
 
 cd ../
 sudo mv * /etc/aria2
@@ -264,8 +222,11 @@ echo "————————————————————————�
 echo -e "\033[31m Aria2默认下载地址： \033[0m"
 echo -e "\033[32m ${HOME}/Downloads \033[0m"
 echo "————————————————————————————————————————"
+echo -e "\033[31m Aria2一键运行脚本地址： \033[0m"
+echo -e "\033[32m ${HOME}/aria2.sh \033[0m"
+echo "————————————————————————————————————————"
 echo -e "\033[32m
-    脚本执行完成，请在当前目录通过下列命令：
+    脚本执行完成，请在${HOME}目录通过下列命令：
     bash aria2.sh
     启动Aria2后台程序
     
@@ -280,6 +241,6 @@ echo -e "\033[32m
     https://space.bilibili.com/355567627
  \033[0m"
  
-echo "删除本脚本带来的残留文件"
-echo "删除成功，愉快使用Aria2吧( ´▽｀)"
+echo "删除本脚本带来的残留文件ing"
+echo "愉快使用Aria2吧( ´▽｀)"
 unlink $0
