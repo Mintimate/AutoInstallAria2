@@ -141,8 +141,10 @@ chmod +x aria2c
 
 dirAria2=${HOME}/Downloads #下载文件存储目录
 if [ -d ${dirAria2} ];then
-  else
-  mkdir ${HOME}/Downloads
+    echo -e "\033[32m 下载目录已经存在 \033[0m"
+else
+    echo -e "\033[32m 创建下载目录 \033[0m"
+    mkdir ${HOME}/Downloads
 fi
 
 # 配置自动删除日志脚本
