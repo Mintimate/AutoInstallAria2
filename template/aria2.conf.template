@@ -74,7 +74,7 @@ max-overall-download-limit=0
 max-download-limit=0
 
 # 禁用 IPv6, 默认:false
-disable-ipv6=false
+disable-ipv6=true
 
 # GZip 支持，默认:false
 http-accept-gzip=true
@@ -100,7 +100,7 @@ enable-dht=true
 
 # 启用 IPv6 DHT 功能, PT 下载(私有种子)会自动禁用，默认:false
 # 在没有 IPv6 支持的环境开启可能会导致 DHT 功能异常
-enable-dht6=true
+enable-dht6=false
 
 # 指定 BT 和 DHT 网络中的 IP 地址
 # 使用场景：在家庭宽带没有公网 IP 的情况下可以把 BT 和 DHT 监听端口转发至具有公网 IP 的服务器，在此填写服务器的 IP ，可以提升 BT 下载速率。
@@ -110,7 +110,7 @@ enable-dht6=true
 dht-file-path=__Aria2Home__/dht.dat
 
 # IPv6 DHT 文件路径，默认：\$HOME/.aria2/dht6.dat
-dht-file-path6=__Aria2Home__/dht.dat
+dht-file-path6=__Aria2Home__/dht6.dat
 
 
 # 本地节点发现, PT 下载(私有种子)会自动禁用 默认:false
