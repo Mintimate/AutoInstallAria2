@@ -1,0 +1,15 @@
+[Unit]
+Description=Aria2c Download Service (User Mode)
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/aria2c --conf-path=$$HOME$$/.aria2/aria2.conf
+RestartSec=3
+Restart=on-failure
+
+MemoryLimit=512M
+CPUQuota=50%
+
+[Install]
+WantedBy=default.target
