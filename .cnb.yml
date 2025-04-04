@@ -117,3 +117,4 @@ $:
             username: ${GIT_USERNAME}
             password: ${GIT_ACCESS_TOKEN}
             branch: main
+            force: true
