@@ -136,8 +136,8 @@ registerAria2Systemctl(){
         -e "s|__Aria2Home__|${ProjectPath}|g" \
         ${ProjectPath}/aria2.service.template > ${HOME}/.config/systemd/user/aria2.service
     echo -e "${GREEN} 注册Aria2服务成功 ${NC}"
-    if [[ $(systemd-detect-virt) == "container" || $(systemd-detect-virt) == "docker" ]]; then
-        echo -e "${YELLOW} 当前在容器内，跳过 systemctl 服务创建 ${NC}"
+    if ! command -v systemd-detect-virt &> /dev/null || [[ $(systemd-detect-virt) == "container" || $(systemd-detect-virt) == "docker" ]]; then
+        echo -e "${YELLOW} 当前在容器内或无法检测虚拟化类型，跳过 systemctl 服务创建 ${NC}"
     else
         systemctl --user daemon-reload
         systemctl --user enable aria2.service
