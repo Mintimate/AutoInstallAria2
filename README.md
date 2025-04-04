@@ -32,7 +32,7 @@ $ tree
 
 当前支持 ARM64 和 AMD64 架构的 Docker 包:
 ```bash
-docker run -d -p 6800:6800 -v ~/Downloads:/app/Downloads docker.cnb.cool/mintimate/tool-forge/autoinstallaria2
+docker run -d --name aria2 -p 6800:6800 -v ~/Downloads:/app/Downloads docker.cnb.cool/mintimate/tool-forge/autoinstallaria2
 ```
 其中:
 - `-p 6800:6800`：将容器内的 6800 端口映射到宿主机的 6800 端口;
@@ -42,6 +42,12 @@ RPC 初始密码获取:
 ```bash
 docker exec -it 38c0a4e3374f cat /app/initAria2Password
 ```
+
+如果你想自定义密码，已经预留了`RPC_SECRET`环境变量:
+```bash
+docker run -d --name aria2 -p 6800:6800 -v ~/Downloads:/app/Downloads -e RPC_SECRET="Mintimate" docker.cnb.cool/mintimate/tool-forge/autoinstallaria2
+```
+此时，RPC 密码为`Mintimate`。
 
 ## 卸载
 如果需要卸载该脚本所安装的一切 Aria2，只需要：

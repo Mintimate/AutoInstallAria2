@@ -19,8 +19,13 @@ COPY AutoInstallAria2ForLinux.sh .
 RUN chmod +x AutoInstallAria2ForLinux.sh && \
     bash AutoInstallAria2ForLinux.sh
 
+COPY entrypoint.sh .
+RUN chmod +x entrypoint.sh
+
 # 暴露端口
 EXPOSE 6800 51413
 
+# 启动时候的脚本（用于重置密码）
+ENTRYPOINT ["/app/entrypoint.sh"]
 # 设置容器启动时运行的命令
 CMD ["/app/aria2c", "--conf-path=/app/aria2.conf"]
