@@ -19,3 +19,88 @@ $:
         # 环境启动后需要执行的命令
         - name: 安装依赖
           script: echo "环境准备完成"
+  # 标签发布时候打包镜像
+  tag_push:
+    - name: "打包 AMD64 架构"
+      runner:
+        tags: cnb:arch:amd64
+      services:
+        - docker
+      env:
+        IMAGE_TAG: ${CNB_DOCKER_REGISTRY}/${CNB_REPO_SLUG_LOWERCASE}:latest-linux-amd64
+        IMAGE_TAG_CURRENT: ${CNB_DOCKER_REGISTRY}/${CNB_REPO_SLUG_LOWERCASE}:${CNB_COMMIT_SHORT}-linux-amd64
+      stages:
+        - name: docker login
+          script: docker login -u ${CNB_TOKEN_USER_NAME} -p "${CNB_TOKEN}" ${CNB_DOCKER_REGISTRY}
+        - name: docker build
+          script: docker build -t ${IMAGE_TAG_CURRENT} -t ${IMAGE_TAG} .
+        - name: docker push
+          script: 
+            - docker push ${IMAGE_TAG_CURRENT}
+            - docker push ${IMAGE_TAG}
+        - name: resolve
+          type: cnb:resolve
+          options:
+            key: build-amd64
+    - name: "打包 ARM64 架构"
+      runner:
+        tags: cnb:arch:arm64:v8
+      services:
+        - docker
+      env:
+        IMAGE_TAG: ${CNB_DOCKER_REGISTRY}/${CNB_REPO_SLUG_LOWERCASE}:latest-linux-arm64
+        IMAGE_TAG_CURRENT: ${CNB_DOCKER_REGISTRY}/${CNB_REPO_SLUG_LOWERCASE}:${CNB_COMMIT_SHORT}-linux-arm64
+      stages:
+        - name: docker login
+          script: docker login -u ${CNB_TOKEN_USER_NAME} -p "${CNB_TOKEN}" ${CNB_DOCKER_REGISTRY}
+        - name: docker build
+          script: docker build -t ${IMAGE_TAG_CURRENT} -t ${IMAGE_TAG} .
+        - name: docker push
+          script: 
+            - docker push ${IMAGE_TAG_CURRENT}
+            - docker push ${IMAGE_TAG}
+        - name: resolve
+          type: cnb:resolve
+          options:
+            key: build-arm64
+    - name: "合并镜像并发布"
+      services:
+        - docker
+      env:
+        IMAGE_TAG: ${CNB_DOCKER_REGISTRY}/${CNB_REPO_SLUG_LOWERCASE}:latest
+        IMAGE_TAG_CURRENT: ${CNB_DOCKER_REGISTRY}/${CNB_REPO_SLUG_LOWERCASE}:${CNB_COMMIT_SHORT}
+      stages:
+        - name: 等待 AMD64 镜像打包完成
+          type: cnb:await
+          options:
+            key: build-amd64
+        - name: 等待 ARM64 镜像打包完成
+          type: cnb:await
+          options:
+            key: build-arm64
+        - name: 聚合最新标签
+          image: cnbcool/manifest
+          settings:
+            target: ${IMAGE_TAG}
+            template: ${IMAGE_TAG}-OS-ARCH
+            platforms:
+              - linux/amd64
+              - linux/arm64
+        - name: 聚合本次分支标签
+          image: cnbcool/manifest
+          settings:
+            target: ${IMAGE_TAG_CURRENT}
+            template: ${IMAGE_TAG_CURRENT}-OS-ARCH
+            platforms:
+              - linux/amd64
+              - linux/arm64  
+        - name: 删除临时标签
+          type: artifact:remove-tag
+          options:
+            name: ${CNB_REPO_NAME}
+            tags:
+              - ${CNB_COMMIT_SHORT}-linux-amd64
+              - ${CNB_COMMIT_SHORT}-linux-arm64
+              - latest-linux-amd64
+              - latest-linux-arm64
+            type: docker
