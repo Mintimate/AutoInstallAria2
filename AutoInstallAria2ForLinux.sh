@@ -5,7 +5,7 @@
 # Blog: https://www.mintimate.cn/about
 
 # 部署的路径
-ProjectPath=${HOME}/aria2Auto
+ProjectPath="${ROOT_PATH:-$HOME/aria2Auto}"
 rm -rf ${ProjectPath} && mkdir -p ${ProjectPath}
 # echo 标准化
 RED='\033[0;31m'    # 红色
