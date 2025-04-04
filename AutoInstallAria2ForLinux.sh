@@ -29,9 +29,11 @@ _____________________________________________________________${NC}"
     作者：Mintimate
    
     使用本脚本可以一键在Linux上配置Aria2
-    获取帮助：
-    QQ：198330181
+    获取帮助 -> QQ：198330181
     （限：求助前，有给我视频三连的粉丝用户）
+
+    捐赠和赞赏：
+    https://www.afdian.com/a/mintimate
     
     更多教程：
     Mintimate's Blog:
@@ -81,7 +83,7 @@ judgeArchitecture(){
 
 setPassword(){
     # 设置密码
-    echo -e "${GREEN}设置Aria2密码 ${NC}"
+    echo -e "${GREEN} 设置Aria2密码 ${NC}"
     echo -e "${RED} (用于远程Aria2认证) ${NC}"
     echo -e "${RED} (直接输入 no 退出并取消配置) ${NC}"
     read aria2Password
@@ -119,19 +121,18 @@ initAria2Conf(){
 }
 
 registerAria2Systemctl(){
-    echo -e "${GREEN} 注册Aria2服务 ${NC}"
     mkdir -p ${HOME}/.config/systemd/user
     sed \
         -e "s|__Aria2Home__|${ProjectPath}|g" \
         ${ProjectPath}/aria2.service.template > ${HOME}/.config/systemd/user/aria2.service
-    echo -e "${GREEN} 服务注册成功 ${NC}"
-    echo -e "${GREEN} 服务启动成功 ${NC}"
+    echo -e "${GREEN} 注册Aria2服务成功 ${NC}"
     if [[ $(systemd-detect-virt) == "container" || $(systemd-detect-virt) == "docker" ]]; then
-        echo -e "${YELLOW}当前在容器内，跳过 systemctl 服务创建 ${NC}"
+        echo -e "${YELLOW} 当前在容器内，跳过 systemctl 服务创建 ${NC}"
     else
         systemctl --user daemon-reload
         systemctl --user enable aria2.service
         systemctl --user start aria2.service
+        echo -e "${GREEN} 服务启动成功 ${NC}"
     fi
 }
 
@@ -146,8 +147,8 @@ printResult(){
     echo -e "${GREEN} ${HOME}/.config/systemd/user/aria2.service ${NC}"
     echo "————————————————————————————————————————"
     echo -e "${RED} Aria2 RPC 启动命令 ${NC}"
-    echo -e "${GREEN}非容器: systemctl --user start aria2.service ${NC}"
-    echo -e "${GREEN}容器内: ${ProjectPath}/aria2c --conf-path=${ProjectPath}/aria2.conf ${NC}"
+    echo -e "${GREEN} 非容器: systemctl --user start aria2.service ${NC}"
+    echo -e "${GREEN} 容器内: ${ProjectPath}/aria2c --conf-path=${ProjectPath}/aria2.conf ${NC}"
     echo "————————————————————————————————————————"
     echo -e "${RED} Aria2 RPC 文件下载目录 ${NC}"
     echo -e "${GREEN} ${HOME}/Download ${NC}"
