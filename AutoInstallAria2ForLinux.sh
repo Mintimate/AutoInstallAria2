@@ -102,6 +102,7 @@ touchAria2Conf(){
     wget -qO ${ProjectPath}/aria2.conf.template https://cnb.cool/Mintimate/tool-forge/AutoInstallAria2/-/git/raw/main/template/aria2.conf.template
     wget -qO ${ProjectPath}/deleteAria2.conf https://cnb.cool/Mintimate/tool-forge/AutoInstallAria2/-/git/raw/main/template/deleteAria2.conf
     wget -qO ${ProjectPath}/aria2.service.template https://cnb.cool/Mintimate/tool-forge/AutoInstallAria2/-/git/raw/main/template/aria2.service.template
+    wget -qO ${ProjectPath}/aria2.tracker.template https://cnb.cool/Mintimate/tool-forge/AutoInstallAria2/-/git/raw/main/template/aria2.tracker.template
     echo -e "${GREEN} 提权 aria2 核心 ${NC}"
     chmod +x ${ProjectPath}/aria2c
 }
@@ -114,6 +115,7 @@ initAria2Conf(){
         -e "s|__Aria2Home__|${ProjectPath}|g" \
         -e "s|__Aria2Token__|${Aria2token}|g" \
         ${ProjectPath}/aria2.conf.template > ${ProjectPath}/aria2.conf
+    sed -i "s|bt-tracker=|bt-tracker=$(cat ${ProjectPath}/aria2.tracker.template)|" ${ProjectPath}/aria2.conf
 }
 
 registerAria2Systemctl(){
