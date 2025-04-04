@@ -78,14 +78,6 @@ $:
           type: cnb:await
           options:
             key: build-arm64
-        - name: 聚合最新标签
-          image: cnbcool/manifest
-          settings:
-            target: ${IMAGE_TAG}
-            template: ${IMAGE_TAG}-OS-ARCH
-            platforms:
-              - linux/amd64
-              - linux/arm64
         - name: 聚合本次分支标签
           image: cnbcool/manifest
           settings:
@@ -94,6 +86,14 @@ $:
             platforms:
               - linux/amd64
               - linux/arm64  
+        - name: 聚合最新标签
+          image: cnbcool/manifest
+          settings:
+            target: ${IMAGE_TAG}
+            template: ${IMAGE_TAG}-OS-ARCH
+            platforms:
+              - linux/amd64
+              - linux/arm64
         - name: 删除临时标签
           type: artifact:remove-tag
           options:
