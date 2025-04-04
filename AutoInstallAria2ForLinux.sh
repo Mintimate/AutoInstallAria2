@@ -161,7 +161,7 @@ printResult(){
     echo -e "${GREEN} 容器内: ${ProjectPath}/aria2c --conf-path=${ProjectPath}/aria2.conf ${NC}"
     echo "————————————————————————————————————————"
     echo -e "${RED} Aria2 RPC 文件下载目录 ${NC}"
-    echo -e "${GREEN} ${HOME}/Download ${NC}"
+    echo -e "${GREEN} ${DownloadTarget} ${NC}"
     echo "————————————————————————————————————————"
 }
 
