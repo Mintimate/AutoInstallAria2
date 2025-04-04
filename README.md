@@ -3,8 +3,7 @@ Auto Install Aria2 To Linux。
 自动配置安装 Aria2 到 Linux 服务器或者 Linux 发行版里。
 
 ## 一键配置安装
-```
- | bash
+```bash
 bash -c "$(wget -qO- https://cnb.cool/Mintimate/tool-forge/AutoInstallAria2/-/git/raw/main/AutoInstallAria2ForLinux.sh)"
 ```
 
