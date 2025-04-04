@@ -10,6 +10,8 @@ rm -rf ${ProjectPath} && mkdir -p ${ProjectPath}
 # 下载的目标地址
 DownloadTarget="${DOWNLOAD_PATH:-$HOME/Downloads}"
 mkdir -p ${DownloadTarget}
+# 是否自动设置密码
+AutoSetPassword=${AutoSetPassword:-false}
 # echo 标准化
 RED='\033[0;31m'    # 红色
 GREEN='\033[0;32m'  # 绿色
@@ -85,14 +87,19 @@ judgeArchitecture(){
 }
 
 setPassword(){
-    # 设置密码
-    echo -e "${GREEN} 设置Aria2密码 ${NC}"
-    echo -e "${RED} (用于远程Aria2认证) ${NC}"
-    echo -e "${RED} (直接输入 no 退出并取消配置) ${NC}"
-    read aria2Password
-    if [ ${aria2Password} == "no" ];then
-        echo -e "${RED} 取消配置 ${NC}"
-        exit
+    if [ ${AutoSetPassword} == "true" ];then
+        aria2Password=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 16 | head -n 1)
+        echo "${aria2Password}" > ${ProjectPath}/initAria2Password
+    else
+        # 设置密码
+        echo -e "${GREEN} 设置Aria2密码 ${NC}"
+        echo -e "${RED} (用于远程Aria2认证) ${NC}"
+        echo -e "${RED} (直接输入 no 退出并取消配置) ${NC}"
+        read aria2Password
+        if [ ${aria2Password} == "no" ];then
+            echo -e "${RED} 取消配置 ${NC}"
+            exit
+        fi
     fi
 }
 
