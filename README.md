@@ -27,6 +27,10 @@ $ tree
 
 ![aria2服务启动](assets/systemctlStatus.webp)
 
+当前版本使用的是 [aria2c 1.37.0_Turbo 版本](https://cnb.cool/flyinbug/aria2-static-build)。是一个修改版本，突破最大线程数限制。**你可以修改`aria2.conf`文件里的`max-concurrent-downloads`参数，来修改最大线程数**。
+
+> 也就是，官方编译的版本，最大线程数是 16，而这个版本，最大线程数是可以突破。
+
 ## Docker 部署
 
 当前支持 ARM64 和 AMD64 架构的 Docker 包:
@@ -62,3 +66,8 @@ rm -rf ~/.config/systemd/user/aria2.service
 ## Licence
 
 [![GPLv3](gplv3.png)](LICENSE)
+
+## Donate
+
+爱发电: [https://afdian.com/@Mintimate](https://afdian.com/@Mintimate)
+Bilibili: [https://space.bilibili.com/355567627](https://space.bilibili.com/355567627)
