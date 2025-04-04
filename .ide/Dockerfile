@@ -12,6 +12,7 @@ RUN apt update && \
     vim \
     zsh \
     build-essential \
+    webp \
     cmake && \
     chsh -s /bin/zsh && \
     yes | zsh -c "$(curl -fsSL 'https://cnb.cool/Mintimate/tool-forge/oh-my-zsh/-/git/raw/main/AutoInstallZshWithPlugin.sh')"
