@@ -7,6 +7,8 @@
 # 部署的路径
 ProjectPath="${ROOT_PATH:-$HOME/aria2Auto}"
 rm -rf ${ProjectPath} && mkdir -p ${ProjectPath}
+# 下载的目标地址
+DownloadTarget="${DOWNLOAD_PATH:-$HOME/Downloads}"
 # echo 标准化
 RED='\033[0;31m'    # 红色
 GREEN='\033[0;32m'  # 绿色
@@ -113,7 +115,7 @@ touchAria2Conf(){
 initAria2Conf(){
     local Aria2token="$1"
     sed \
-        -e "s|__HOME__|${HOME}|g" \
+        -e "s|__DownloadTarget__|${DownloadTarget}|g" \
         -e "s|__Aria2Home__|${ProjectPath}|g" \
         -e "s|__Aria2Token__|${Aria2token}|g" \
         ${ProjectPath}/aria2.conf.template > ${ProjectPath}/aria2.conf

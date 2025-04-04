@@ -1,7 +1,7 @@
 ## 文件保存设置 ##
 
-#文件保存路径, 默认为当前启动位置;当前为家目录下Downlaods文件夹
-dir=__HOME__/Downloads
+#文件保存路径, 默认为当前启动位置;脚本默认配置到家目录下的 Downloads
+dir=__DownloadTarget__
 
 
 # 文件预分配方式, 可选：none, prealloc, trunc, falloc, 默认:prealloc
