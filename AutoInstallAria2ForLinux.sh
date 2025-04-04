@@ -9,6 +9,7 @@ ProjectPath="${ROOT_PATH:-$HOME/aria2Auto}"
 rm -rf ${ProjectPath} && mkdir -p ${ProjectPath}
 # 下载的目标地址
 DownloadTarget="${DOWNLOAD_PATH:-$HOME/Downloads}"
+mkdir -p ${DownloadTarget}
 # echo 标准化
 RED='\033[0;31m'    # 红色
 GREEN='\033[0;32m'  # 绿色
